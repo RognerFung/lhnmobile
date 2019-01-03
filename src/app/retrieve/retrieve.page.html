@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Retrieve Password</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="presentPopover($event)">
+        <ion-icon slot="icon-only" name="menu"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-card>
+  <ion-card-title>Enter your email</ion-card-title>
+  <form novalidate [formGroup]="retrieveForm" (ngSubmit)="retrieve()">
+    <ion-item>
+      <ion-label position="floating" color="tertiary">Email</ion-label>
+      <ion-input type="email" formControlName="Email" required></ion-input>
+    </ion-item>
+    <ion-button [disabled]="retrieveForm.invalid" type="submit" float-start margin-top fill="clear" color="tertiary">
+      Retrieve
+    </ion-button>
+  </form>
+  </ion-card>
+  <ion-button class="buttonBottom" *ngIf="successMessage" expand="block" fill="solid" color="success">
+    {{successMessage}}
+  </ion-button>
+  <ion-button class="buttonBottom" *ngIf="errorMessage" expand="block" fill="solid" color="danger">
+    {{errorMessage}}
+  </ion-button>
+</ion-content>

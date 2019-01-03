@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Login</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="presentPopover($event)">
+        <ion-icon slot="icon-only" name="menu"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-img src="/assets/home.jpg"></ion-img>
+  <form novalidate [formGroup]="loginForm" (ngSubmit)="login()" class="login-form">
+    <ion-item>
+      <ion-label position="floating" color="tertiary">Email</ion-label>
+      <ion-input type="email" formControlName="Email" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" color="tertiary">Password</ion-label>
+      <ion-input type="password" formControlName="Password" required></ion-input>
+    </ion-item>
+    <ion-button [disabled]="loginForm.invalid" type="submit" float-start margin-top fill="clear" color="tertiary">
+      Submit
+    </ion-button>
+    <ion-button float-end margin-top fill="clear" color="tertiary" href="/retrieve">
+      Forgot Password
+    </ion-button>
+  </form>
+  <ion-button  *ngIf="successMessage" expand="block" fill="solid" color="success">
+    {{successMessage}}
+  </ion-button>
+  <ion-button   *ngIf="errorMessage" expand="block" fill="solid" color="danger">
+    {{errorMessage}}
+  </ion-button>
+  <ion-button class="buttonBottom" expand="full" margin-top color="tertiary" href="/signup">
+    Sign Up
+  </ion-button>
+</ion-content>

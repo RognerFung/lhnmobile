@@ -1,0 +1,44 @@
+<ion-header align-title="center">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Sign Up</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="presentPopover($event)">
+        <ion-icon slot="icon-only" name="menu"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-img src="/assets/home.jpg"></ion-img>
+  <form novalidate [formGroup]="signupForm" #fform="ngForm" (ngSubmit)="signup()">
+    <ion-item>
+      <ion-label position="floating" color="tertiary">Email</ion-label>
+      <ion-input type="email" formControlName="Email" required (ionChange)="onFormChange($event)" debounce="500"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" color="tertiary">Password</ion-label>
+      <ion-input type="password" formControlName="Password" required (ionChange)="onFormChange($event)" debounce="500"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" color="tertiary">Password</ion-label>
+      <ion-input type="password" formControlName="PasswordConfirm" required (ionChange)="onFormChange($event)" debounce="500"></ion-input>
+    </ion-item>
+    <ion-button [disabled]="signupForm.invalid || signupForm.controls.Password.value != signupForm.controls.PasswordConfirm.value" 
+      type="submit" float-start margin-top fill="clear" color="tertiary">
+      Submit
+    </ion-button>
+  </form>
+  <ion-button float-end margin-top fill="clear" color="tertiary" href="/login">
+    Log In
+  </ion-button>
+  <ion-button class="buttonBottom" *ngIf="successMessage" expand="block" fill="solid" color="success">
+    {{successMessage}}
+  </ion-button>
+  <ion-button class="buttonBottom"  *ngIf="errorMessage" expand="block" fill="solid" color="danger">
+    {{errorMessage}}
+  </ion-button>
+</ion-content>

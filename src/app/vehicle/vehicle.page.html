@@ -1,0 +1,208 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title *ngIf="title">{{title}}</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="presentPopover($event)">
+        <ion-icon slot="icon-only" name="menu"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-segment (ionChange)="segmentChanged($event)" color="tertiary" [(ngModel)]="title">
+    <ion-segment-button value="My Vehicles">
+      My Vehicles
+    </ion-segment-button>
+    <ion-segment-button value="Add New Vehicle">
+      New Vehicle
+    </ion-segment-button>
+    <ion-segment-button value="Change Vehicle">
+      Change Vehicle
+    </ion-segment-button>
+  </ion-segment>
+</ion-header>
+
+<ion-content *ngIf="title === 'My Vehicles'" padding>
+  <ion-button class="buttonBottom" *ngIf="successMessage" expand="block" fill="solid" color="success">
+    {{successMessage}}
+  </ion-button>
+  <ion-button class="buttonBottom"  *ngIf="errorMessage" expand="block" fill="solid" color="danger">
+    {{errorMessage}}
+  </ion-button>
+  <ion-card *ngIf="vehicles && vehicles.length == 0">
+    <ion-card-title color="tertiary">No vehicles</ion-card-title>
+    <ion-button expand="full" margin-top color="tertiary" (click)="toAddVehicle()">Add Vehicle</ion-button>
+  </ion-card>
+  <ion-card *ngFor="let vehicle of vehicles">
+    <ion-card-header>
+      <ion-card-title>
+        {{vehicle.VehicleNum}}
+      </ion-card-title>
+      <ion-card-subtitle>
+        {{vehicle.VehicleType}}
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngIf="vehicle.IUNum">
+          <ion-label position="stacked" color="tertiary">IU No.</ion-label>
+          <ion-input readonly value="{{vehicle.IUNum}}"></ion-input>
+        </ion-item>
+        <ion-item *ngIf="vehicle.CashCardNum">
+          <ion-label position="stacked" color="tertiary">Cash Card No.</ion-label>
+          <ion-input readonly value="{{vehicle.CashCardNum}}"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked" color="tertiary">Added Date</ion-label>
+          <ion-input readonly value="{{vehicle.AddedDate}}"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked" color="tertiary">Status</ion-label>
+          <ion-input readonly value="{{vehicle.Status}}"></ion-input>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+<ion-content *ngIf="title==='Add New Vehicle'" padding>
+  <form novalidate [formGroup]="addForm" (ngSubmit)="addNewVehicle()">
+    <ion-item>
+      <ion-label position="floating" color="tertiary">Vehicle No.</ion-label>
+      <ion-input type="text" formControlName="VehicleNum" required autofocus></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" color="tertiary">Vehicle Type</ion-label>
+      <ion-select interface="popover" formControlName="VehicleType">
+        <ion-select-option value="Car/Commercial Van">Car/Commercial Van</ion-select-option>
+        <ion-select-option value="Lorry">Lorry</ion-select-option>
+        <ion-select-option value="Motorcycle">Motorcycle</ion-select-option>
+        <ion-select-option value="Free(Police/Amb)">Free(Police/Amb)</ion-select-option>
+        <ion-select-option value="Short Lorry">Short Lorry</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" color="tertiary">IU No. [Preferred]</ion-label>
+      <ion-input type="text" formControlName="IUNum"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" color="tertiary">Cash Card No.</ion-label>
+      <ion-input type="text" formControlName="CashCardNum"></ion-input>
+    </ion-item>
+    <ion-button 
+      [disabled]="addForm.invalid||(addForm.controls.IUNum.value.length == 0&&addForm.controls.CashCardNum.value.length == 0)" 
+      type="submit" float-start margin-top fill="clear" color="tertiary">
+      Submit
+    </ion-button>
+  </form>
+  <ion-button class="buttonBottom" *ngIf="successMessage" expand="block" fill="solid" color="success">
+    {{successMessage}}
+  </ion-button>
+  <ion-button class="buttonBottom"  *ngIf="errorMessage" expand="block" fill="solid" color="danger">
+    {{errorMessage}}
+  </ion-button>
+</ion-content>
+
+<ion-content *ngIf="title=='Change Vehicle'" padding>
+  <ion-card *ngIf="vehicles && vehicles.length == 0">
+    <ion-card-title color="tertiary">No vehicles</ion-card-title>
+    <ion-button expand="full" margin-top color="tertiary" (click)="toAddVehicle()">Add Vehicle</ion-button>
+  </ion-card>
+  <form *ngIf="vehicles && vehicles.length > 0" novalidate [formGroup]="changeVehicleForm" (ngSubmit)="changeVehicle()">
+    <div class="frame">
+      <ion-item>
+        <ion-label position="floating" color="tertiary">Vehicle No.</ion-label>
+        <ion-select interface="popover" formControlName="FromVehicleID" required>
+          <ion-select-option *ngFor="let vehicle of vehicles" value="{{vehicle.VehicleID}}">{{vehicle.VehicleNum}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating" color="tertiary">Request Type</ion-label>
+        <ion-select interface="popover" formControlName="RequestType" required (ionChange)="onRequestTypeChange()">
+          <ion-select-option value="Change Vehicle">Change Vehicle</ion-select-option>
+          <ion-select-option value="Revert Vehicle">Revert Vehicle</ion-select-option>
+          <ion-select-option value="Change IU">Change IU</ion-select-option>
+          <ion-select-option value="Change Cash Card">Change Cash Card</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item *ngIf="changeVehicleForm.controls.RequestType.value == 'Change Vehicle' || changeVehicleForm.controls.RequestType.value == 'Revert Vehicle' || changeVehicleForm.controls.RequestType.value == 'Change IU'">
+        <ion-label position="floating" color="tertiary">Old IU No.</ion-label>
+        <ion-input type="text" formControlName="FromIU" [(ngModel)]="selectIU" readonly></ion-input>
+      </ion-item>
+      <ion-item *ngIf="changeVehicleForm.controls.RequestType.value == 'Change Vehicle' || changeVehicleForm.controls.RequestType.value == 'Revert Vehicle' || changeVehicleForm.controls.RequestType.value == 'Change Cash Card'">
+        <ion-label position="floating" color="tertiary">Old Cash Card No.</ion-label>
+        <ion-input type="text" formControlName="FromCashCard" [(ngModel)]="selectCashCard" readonly></ion-input>
+      </ion-item>
+    </div>
+    <ion-item *ngIf="changeVehicleForm.controls.RequestType.value == 'Change Vehicle' || changeVehicleForm.controls.RequestType.value == 'Revert Vehicle'">
+      <ion-label position="floating" color="tertiary">New Vehicle No.</ion-label>
+      <ion-input type="text" formControlName="ToVehicleNum"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="changeVehicleForm.controls.RequestType.value == 'Change Vehicle' || changeVehicleForm.controls.RequestType.value == 'Revert Vehicle' || changeVehicleForm.controls.RequestType.value == 'Change IU'">
+      <ion-label position="floating" color="tertiary">New IU No.</ion-label>
+      <ion-input type="text" formControlName="ToIU"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="changeVehicleForm.controls.RequestType.value == 'Change Vehicle' || changeVehicleForm.controls.RequestType.value == 'Revert Vehicle' || changeVehicleForm.controls.RequestType.value == 'Change Cash Card'">
+      <ion-label position="floating" color="tertiary">New Cash Card No.</ion-label>
+      <ion-input type="text" formControlName="ToCashCard"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="changeVehicleForm.controls.RequestType.value == 'Change Vehicle'">
+      <ion-label position="floating" color="tertiary">Request Reason</ion-label>
+      <ion-select class="long-select" interface="popover" formControlName="RequestReason">
+        <ion-select-option class="long-select-option" value="Purchase of new vehicle">Purchase new</ion-select-option>
+        <ion-select-option class="long-select-option" value="Vehicle under repair">Under repair</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="changeVehicleForm.controls.RequestType.value == 'Change IU'" >
+      <ion-label position="floating" color="tertiary">Request Reason</ion-label>
+      <ion-select class="long-select" interface="popover" formControlName="RequestReason">
+       <ion-select-option *ngIf="changeVehicleForm.controls.RequestType.value == 'Change IU'" class="long-select-option" value="Old IU spoilt">Old IU spoilt</ion-select-option>
+        <ion-select-option *ngIf="changeVehicleForm.controls.RequestType.value == 'Change IU'" class="long-select-option" value="Installed new IU">Installed new IU</ion-select-option>
+       </ion-select>
+    </ion-item>
+    <ion-item *ngIf="changeVehicleForm.controls.RequestType.value == 'Change Cash Card'">
+      <ion-label position="floating" color="tertiary">Request Reason</ion-label>
+      <ion-select class="long-select" interface="popover" formControlName="RequestReason">
+        <ion-select-option class="long-select-option" value="Old cash card lost">Old card lost</ion-select-option>
+        <ion-select-option class="long-select-option" value="Old cash card expired">Old card expired</ion-select-option>
+        <ion-select-option *ngIf="changeVehicleForm.controls.RequestType.value == 'Revert Vehicle'" class="long-select-option" value="Vehicle back from repair">Back from repair</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="changeVehicleForm.controls.RequestType.value == 'Revert Vehicle'">
+      <ion-label position="floating" color="tertiary">Request Reason</ion-label>
+      <ion-select class="long-select" interface="popover" formControlName="RequestReason">
+        <ion-select-option class="long-select-option" value="Vehicle back from repair">Back from repair</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="changeVehicleForm.controls.RequestType.value == 'Change Vehicle' && changeVehicleForm.controls.RequestReason.value == 'Vehicle under repair'">
+      <ion-label position="floating" color="tertiary">Start Date</ion-label>
+      <ion-datetime display-format="YYYY-MM-DD" picker-format="YYYY-MM-DD" min={{today}} max="2020-12-31" formControlName="PeriodFrom" (ionChange)="onDateChange()" [(ngModel)]="periodFrom"></ion-datetime>
+    </ion-item>
+    <ion-item *ngIf="changeVehicleForm.controls.RequestType.value == 'Change Vehicle' && changeVehicleForm.controls.RequestReason.value == 'Vehicle under repair'">
+      <ion-label position="floating" color="tertiary">End Date</ion-label>
+      <ion-datetime display-format="YYYY-MM-DD" picker-format="YYYY-MM-DD" min={{periodFrom}} max="2020-12-31" formControlName="PeriodTo" [(ngModel)]="periodTo"></ion-datetime>
+    </ion-item>
+    <ion-button *ngIf="changeVehicleForm.controls.RequestType.value == 'Change Vehicle' || changeVehicleForm.controls.RequestType.value=='Revert Vehicle'"
+      [disabled]="changeVehicleForm.controls.FromVehicleID.value == null || changeVehicleForm.controls.ToVehicleNum.value.length == 0" 
+      type="submit" float-start margin-top fill="clear" color="tertiary">
+      Submit
+    </ion-button>
+    <ion-button *ngIf="changeVehicleForm.controls.RequestType.value == 'Change IU'"
+      [disabled]="changeVehicleForm.controls.FromVehicleID.value == null || changeVehicleForm.controls.ToIU.value.length == 0" 
+      type="submit" float-start margin-top fill="clear" color="tertiary">
+      Submit
+    </ion-button>
+    <ion-button *ngIf="changeVehicleForm.controls.RequestType.value == 'Change Cash Card'"
+      [disabled]="changeVehicleForm.controls.FromVehicleID.value == null || changeVehicleForm.controls.ToCashCard.value.length == 0" 
+      type="submit" float-start margin-top fill="clear" color="tertiary">
+      Submit
+    </ion-button>
+  </form>
+  <ion-button class="buttonBottom" *ngIf="successMessage" expand="block" fill="solid" color="success">
+    {{successMessage}}
+  </ion-button>
+  <ion-button class="buttonBottom"  *ngIf="errorMessage" expand="block" fill="solid" color="danger">
+    {{errorMessage}}
+  </ion-button>
+</ion-content>

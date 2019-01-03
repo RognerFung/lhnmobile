@@ -1,0 +1,84 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{title | async}}</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="presentPopover($event)">
+        <ion-icon slot="icon-only" name="menu"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-segment #seg (ionChange)="segmentChanged($event)" color="tertiary">
+    <ion-segment-button value="My Tenant Status">
+      My Tenant Status
+    </ion-segment-button>
+    <ion-segment-button value="Submit Tenant Proof">
+      Submit Tenant Proof
+    </ion-segment-button>
+  </ion-segment>
+</ion-header>
+
+<ion-content *ngIf="(title | async) == 'My Tenant Status'">
+  <ion-card *ngIf="(tenants | async)?.length == 0">
+    <ion-card-title color="tertiary">No Tenant Status</ion-card-title>
+    <ion-button expand="full" margin-top color="tertiary" (click)="addTenant()">Submit Tenant Proof</ion-button>
+  </ion-card>
+  <ion-grid *ngIf="(tenants | async)?.length > 0">
+    <ion-row text-center>
+      <ion-col size-md="8" size-sm="6" size="5">
+        <ion-label inset color="tertiary">Parkint Lot Address</ion-label>
+      </ion-col>
+      <ion-col size-md="2" size-sm="3" size="3">
+        <ion-label inset color="tertiary">Vehicle Amount</ion-label>
+      </ion-col>
+      <ion-col size-md="2" size-sm="3" size="4">
+        <ion-label inset color="tertiary">Status</ion-label>
+      </ion-col>
+    </ion-row >
+    <ion-row *ngFor="let tenant of tenants | async" text-center>
+      <ion-col size-md="8" size-sm="6" size="5">
+        <ion-list inset>{{tenant.Address}}</ion-list>
+      </ion-col>
+      <ion-col size-md="2" size-sm="3" size="3">
+          <ion-list inset>{{tenant.VehicleAmount}}</ion-list>
+      </ion-col>
+      <ion-col size-md="2" size-sm="3" size="4">
+          <ion-list inset>{{tenant.Status}}</ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-button class="buttonBottom" *ngIf="successMessage" expand="block" fill="solid" color="success">
+    {{successMessage}}
+  </ion-button>
+  <ion-button class="buttonBottom"  *ngIf="errorMessage" expand="block" fill="solid" color="danger">
+    {{errorMessage}}
+  </ion-button>
+</ion-content>
+
+<ion-content *ngIf="(title | async) == 'Submit Tenant Proof'" padding>
+  <ion-item>
+    <ion-label position="stacked" color="tertiary">Choose Parking Lot</ion-label>
+    <ion-select *ngIf="parking_lots" interface="alert" required [(ngModel)]="selectParkingLotID" placeholder="Select Parking Lot" (ionChange)="checkTenantExist(selectParkingLotID)">
+      <ion-select-option *ngFor="let parking_lot of parking_lots | async" value="{{parking_lot.ParkingLotID}}">{{parking_lot.Address}}</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item>
+    <ion-label position="stacked" color="tertiary">Upload Tenancy Proof (Limit 2M)</ion-label>
+    <ion-input *ngIf="filelist" value="{{filelist[0].name}}"></ion-input>
+    <ion-button class="buttonBottom" expand="block" fill="outline" color="tertiary" (click)="fileInput.click()">
+      Choose File
+    </ion-button>
+    <input #fileInput type="file" (change)="fileChange($event)" accept=".jpg,.jpeg,.png,.gif,.JPG">
+  </ion-item>
+  <ion-button [disabled]="selectParkingLotID == null || file == null || invalid" margin-top fill="clear" color="tertiary" (click)="submitTenant()">
+    Submit
+  </ion-button>
+  <ion-button class="buttonBottom" *ngIf="successMessage" expand="block" fill="solid" color="success">
+    {{successMessage}}
+  </ion-button>
+  <ion-button class="buttonBottom"  *ngIf="errorMessage" expand="block" fill="solid" color="danger">
+    {{errorMessage}}
+  </ion-button>
+</ion-content>

@@ -1,0 +1,97 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Request</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="presentPopover($event)">
+        <ion-icon slot="icon-only" name="menu"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="requests && requests.length == 0">
+  <ion-card>
+    <ion-card-title color="tertiary">No requests</ion-card-title>
+    <ion-button expand="full" margin-top color="tertiary" href="/dashboard">Back to DashBoard</ion-button>
+  </ion-card>
+</ion-content>
+
+<ion-content padding>
+  <ion-card *ngFor="let request of requests">
+    <ion-card-header>
+      <ion-card-title>
+        {{request.VehicleNum}}
+      </ion-card-title>
+      <ion-card-subtitle>
+        {{request.Address}}
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <div slot="start">
+            <ion-label position="stacked" color="tertiary">Vehicle</ion-label>
+            <ion-input readonly value="{{request.FromVehicleNum}}"></ion-input>
+          </div>
+          <div slot="start">
+            <ion-label position="stacked" color="tertiary">Status</ion-label>
+            <ion-input readonly value="{{request.Status}}"></ion-input>
+          </div>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked" color="tertiary">Request Time</ion-label>
+          <ion-input readonly value="{{request.RequestDate}}"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked" color="tertiary">Request Type</ion-label>
+          <ion-input readonly value="{{request.RequestType}}"></ion-input>
+        </ion-item>
+        <ion-item *ngIf="request.RequestReason">
+          <ion-label position="stacked" color="tertiary">Request Reason</ion-label>
+          <ion-input readonly value="{{request.RequestReason}}"></ion-input>
+        </ion-item>
+        <ion-item *ngIf="request.RequestType === 'Change Vehicle'" lines="full">
+          <div slot="start">
+            <ion-label position="stacked" color="tertiary">Old Vehicle No.</ion-label>
+            <ion-input readonly value="{{request.FromVehicleNum}}"></ion-input>
+          </div>
+          <div slot="start">
+            <ion-label position="stacked" color="tertiary">New Vehicle No.</ion-label>
+            <ion-input readonly value="{{request.ToVehicleNum}}"></ion-input>
+          </div>
+        </ion-item>
+        <ion-item *ngIf="request.PeriodFrom" lines="full">
+          <div slot="start">
+            <ion-label position="stacked" color="tertiary">Start</ion-label>
+            <ion-input readonly value="{{request.PeriodFrom}}"></ion-input>
+          </div>
+          <div slot="start">
+            <ion-label position="stacked" color="tertiary">End</ion-label>
+            <ion-input readonly value="{{request.PeriodTo}}"></ion-input>
+          </div>
+        </ion-item>
+        <ion-item *ngIf="request.FromIU">
+          <ion-label position="stacked" color="tertiary">Old IU</ion-label>
+          <ion-input readonly value="{{request.FromIU}}"></ion-input>
+        </ion-item>
+        <ion-item *ngIf="request.ToIU">
+          <ion-label position="stacked" color="tertiary">New IU</ion-label>
+          <ion-input readonly value="{{request.ToIU}}"></ion-input>
+        </ion-item>
+        <ion-item *ngIf="request.FromCashCard">
+          <ion-label position="stacked" color="tertiary">Old CashCard</ion-label>
+          <ion-input readonly value="{{request.FromCashCard}}"></ion-input>
+        </ion-item>
+        <ion-item *ngIf="request.ToCashCard">
+          <ion-label position="stacked" color="tertiary">New CashCard</ion-label>
+          <ion-input readonly value="{{request.ToCashCard}}"></ion-input>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+
+  </ion-card>
+
+</ion-content>

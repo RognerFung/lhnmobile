@@ -1,0 +1,337 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title *ngIf="title">{{title}}</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="presentPopover($event)">
+        <ion-icon slot="icon-only" name="menu"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-segment (ionChange)="segmentChanged($event)" color="tertiary" [(ngModel)]="title">
+    <ion-segment-button value="My Season Parkings">
+      My seasons
+    </ion-segment-button>
+    <ion-segment-button value="Purchase New Season">
+      Purchase
+    </ion-segment-button>
+    <ion-segment-button value="Renew Season">
+      Renew
+    </ion-segment-button>
+    <ion-segment-button value="Terminate Season">
+      Terminate
+    </ion-segment-button>
+  </ion-segment>
+</ion-header>
+
+<ion-content *ngIf="title == 'My Season Parkings'" padding>
+  <ion-card *ngIf="seasons && seasons.length == 0">
+    <ion-card-title color="tertiary">No season parking</ion-card-title>
+    <ion-button expand="full" margin-top color="tertiary" (click)="addSeason()">Purchase Season</ion-button>
+  </ion-card>
+  <ion-button class="buttonBottom" *ngIf="successMessage" expand="block" fill="solid" color="success">
+    {{successMessage}}
+  </ion-button>
+  <ion-button class="buttonBottom"  *ngIf="errorMessage" expand="block" fill="solid" color="danger">
+    {{errorMessage}}
+  </ion-button>
+  <ion-card *ngFor="let season of seasonActive">
+    <ion-card-header>
+      <ion-card-title>
+        {{season.SeasonParkingID}}/
+        {{season.VehicleNum}}
+      </ion-card-title>
+      <ion-card-subtitle>
+        {{season.Address}}
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-label position="stacked" color="tertiary">Start</ion-label>
+            <ion-input readonly value="{{season.PeriodFrom}}"></ion-input>
+          </ion-col>
+          <ion-col size="6">
+            <ion-label position="stacked" color="tertiary">End</ion-label>
+            <ion-input readonly value="{{season.PeriodTo}}"></ion-input>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <ion-label position="stacked" color="tertiary">Type</ion-label>
+            <ion-input readonly value="{{season.SeasonType}}"></ion-input>
+          </ion-col>
+          <ion-col size="6">
+            <ion-label position="stacked" color="tertiary">Status</ion-label>
+            <ion-input readonly value="{{season.Status}}"></ion-input>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <ion-button (click)="renewSeason(season)" margin-top fill="clear" color="tertiary">
+              Renew
+            </ion-button>
+          </ion-col>
+          <ion-col size="6">
+            <ion-button (click)="terminateSeason(season)" margin-top fill="clear" color="tertiary">
+              Terminate
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+  <ion-card *ngFor="let season of seasonTerminated" color="medium">
+    <ion-card-header>
+      <ion-card-title>
+        {{season.SeasonParkingID}}/
+        {{season.VehicleNum}}
+      </ion-card-title>
+      <ion-card-subtitle>
+        {{season.Address}}
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-label position="stacked" color="tertiary">Start</ion-label>
+            <ion-input readonly value="{{season.PeriodFrom}}"></ion-input>
+          </ion-col>
+          <ion-col size="6">
+            <ion-label position="stacked" color="tertiary">End</ion-label>
+            <ion-input readonly value="{{season.PeriodTo}}"></ion-input>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <ion-label position="stacked" color="tertiary">Type</ion-label>
+            <ion-input readonly value="{{season.SeasonType}}"></ion-input>
+          </ion-col>
+          <ion-col size="6">
+            <ion-label position="stacked" color="tertiary">Status</ion-label>
+            <ion-input readonly value="{{season.Status}}"></ion-input>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <ion-button (click)="renewSeason(season)" margin-top fill="clear" color="tertiary">
+              Renew
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+<ion-content *ngIf="title=='Purchase New Season'" padding>
+  <ion-card *ngIf="vehicles && vehicles.length == 0">
+    <ion-card-title color="tertiary">No vehicles</ion-card-title>
+    <ion-card-title color="tertiary">Add a vehicle first</ion-card-title>
+    <ion-button expand="full" margin-top color="tertiary" href="/vehicle">Add Vehicle</ion-button>
+  </ion-card>
+  <form *ngIf="vehicles && vehicles.length > 0" novalidate [formGroup]="purchaseForm" (ngSubmit)="selectPayment('purchase')">
+    <ion-item>
+      <ion-label position="floating" color="tertiary">Choose Parking Lot</ion-label>
+      <ion-select *ngIf="parking_lots_updated" interface="popover" formControlName="ParkingLotID" required (ionChange)="onSelectParkingLot()">
+        <ion-select-option disabled>Tenant</ion-select-option>
+        <ion-select-option *ngFor="let parking_lot of parking_lots_tenant" value="{{parking_lot.ParkingLotID}}">{{parking_lot.Address}}</ion-select-option>
+        <ion-select-option disabled>Public</ion-select-option>
+        <ion-select-option *ngFor="let parking_lot of parking_lots_public" value="{{parking_lot.ParkingLotID}}">{{parking_lot.Address}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" color="tertiary">Choose Vehicle</ion-label>
+      <ion-select *ngIf="vehicles_updated" interface="popover" formControlName="VehicleID" required (ionChange)="onSelectVehicle()">
+        <ion-select-option *ngFor="let vehicle of vehicles_updated" value="{{vehicle.VehicleID}}">{{vehicle.VehicleNum}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating" color="tertiary">Choose Season Type</ion-label>
+      <ion-select interface="popover" formControlName="SeasonType" required>
+        <ion-select-option value="Whole Day">Whole Day</ion-select-option>
+        <ion-select-option value="Day">Day</ion-select-option>
+        <ion-select-option value="Night">Night</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item lines="full">
+      <div slot="start">
+        <ion-label position="floating" color="tertiary">Start Date</ion-label>
+        <ion-datetime display-format="YYYY-MM-DD" picker-format="YYYY-MM-DD" min={{today}} max="2025-12-31" formControlName="PeriodFrom" (ionChange)="onSelectPeriodFromPurchase()" [(ngModel)]="periodFromPurchase"></ion-datetime>
+      </div>
+      <div slot="end">
+        <ion-label position="floating" color="tertiary">End Date</ion-label>
+        <ion-datetime display-format="YYYY-MM-DD" picker-format="YYYY-MM-DD" min="{{periodToMinPurchase}}" max="2025-12-31" formControlName="PeriodTo" (ionChange)="onSelectPeriodToPurchase()" [(ngModel)]="periodToPurchase"></ion-datetime>
+      </div>
+    </ion-item>
+    <ion-item *ngIf="pricePurchase != null" lines="full">
+      <div slot="start">
+        <ion-label position="floating" color="tertiary">Price (SGD)</ion-label>
+        <ion-input readonly value="${{pricePurchase}}"></ion-input>
+      </div>
+      <div slot="end">
+        <ion-label position="floating" color="tertiary">Qty (month)</ion-label>
+        <ion-input readonly value="{{qtyPurchase}}"></ion-input>
+      </div>
+    </ion-item>
+    <ion-item *ngIf="pricingTypePurchase">
+      <ion-label position="floating" color="tertiary">Price Type</ion-label>
+      <ion-input readonly value="{{pricingTypePurchase}}"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="amountPurchase">
+      <ion-label position="floating" color="tertiary">Total Amount (SGD)</ion-label>
+      <ion-input readonly value="${{amountPurchase}}"></ion-input>
+    </ion-item>
+    <ion-button type="submit" float-start margin-top fill="clear" color="tertiary" 
+      [disabled]="purchaseForm.controls.VehicleID.value == null || purchaseForm.controls.ParkingLotID.value == null  
+        || purchaseForm.controls.SeasonType.value == null || purchaseForm.controls.PeriodFrom.value == null  
+        || purchaseForm.controls.PeriodTo.value == null ">
+      Purchase
+    </ion-button>
+  </form>
+  <ion-button class="buttonBottom" *ngIf="successMessage" expand="block" fill="solid" color="success">
+    {{successMessage}}
+  </ion-button>
+  <ion-button class="buttonBottom"  *ngIf="errorMessage" expand="block" fill="solid" color="danger">
+    {{errorMessage}}
+  </ion-button>
+</ion-content>
+
+<ion-content *ngIf="title=='Renew Season'" padding>
+  <ion-card *ngIf="seasons && seasons.length == 0">
+    <ion-card-title color="tertiary">No season parking</ion-card-title>
+    <ion-button expand="full" margin-top color="tertiary" (click)="addSeason()">Purchase Season</ion-button>
+  </ion-card>
+  <form *ngIf="seasons && seasons.length > 0" novalidate [formGroup]="renewForm" (ngSubmit)="selectPayment('renew')">
+    <div class="frame">
+      <ion-item>
+        <ion-label position="float" color="tertiary">Choose Season Parking</ion-label>
+        <ion-select *ngIf="seasons" interface="popover" formControlName="SeasonParkingID" required (ionChange)="onSelectSeason()">
+          <ion-select-option 
+            *ngFor="let season of seasons" 
+            [value]="season.SeasonParkingID" 
+            [selected]="selectSeason && season.SeasonParkingID == selectSeason.SeasonParkingID">
+            {{season.SeasonParkingID}}/{{season.VehicleNum}}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item *ngIf="selectSeason" lines="full">
+        <div slot="start">
+          <ion-label position="stacked" color="tertiary">Start Date</ion-label>
+          <ion-datetime display-format="YYYY-MM-DD" picker-format="YYYY-MM-DD" value="{{selectSeason.PeriodFrom}}" disabled="true"></ion-datetime>
+        </div>
+        <div slot="end">
+          <ion-label position="stacked" color="tertiary">End Date</ion-label>
+          <ion-datetime display-format="YYYY-MM-DD" picker-format="YYYY-MM-DD" value="{{selectSeason.PeriodTo}}" disabled="true"></ion-datetime>
+        </div>
+      </ion-item>
+
+      <ion-item *ngIf="selectSeason" lines="full">
+        <div slot="start">
+          <ion-label position="stacked" color="tertiary">Season Type</ion-label>
+          <ion-input value="{{selectSeason.SeasonType}}" disabled="true"></ion-input>
+        </div>
+        <div slot="end">
+          <ion-label position="stacked" color="tertiary">Status</ion-label>
+          <ion-input value="{{selectSeason.Status}}" disabled="true"></ion-input>
+        </div>
+      </ion-item>
+    </div>
+    <ion-item *ngIf="selectSeason" lines="full">
+      <div slot="start">
+        <ion-label position="stacked" color="tertiary">Renew From</ion-label>
+        <ion-datetime display-format="YYYY-MM-DD" picker-format="YYYY-MM-DD" value="{{periodFromRenew}}" disabled="true"></ion-datetime>
+      </div>
+      <div slot="end">
+        <ion-label position="stacked" color="tertiary">Renew To</ion-label>
+        <ion-datetime display-format="YYYY-MM-DD" picker-format="YYYY-MM-DD" [min]="periodToMinRenew" max="2025-12-31" formControlName="PeriodTo" (ionChange)="onSelectPeriodToRenew()" [(ngModel)]="periodToRenew"></ion-datetime>
+      </div>
+    </ion-item>
+    
+    <ion-item *ngIf="amountRenew != null" lines="full">
+      <div slot="start">
+        <ion-label position="stacked" color="tertiary">Price (SGD)</ion-label>
+        <ion-input value="${{priceRenew}}" disabled="true"></ion-input>
+      </div>
+      <div slot="end">
+        <ion-label position="stacked" color="tertiary">Qty (month)</ion-label>
+        <ion-input value="{{qtyRenew}}" disabled="true"></ion-input>
+      </div>
+    </ion-item>
+    <ion-item *ngIf="amountRenew != null">
+      <ion-label position="stacked" color="tertiary">Total Amount (SGD)</ion-label>
+      <ion-input value="${{amountRenew}}" disabled="true"></ion-input>
+    </ion-item>
+    <ion-button type="submit" float-start margin-top fill="clear" color="tertiary" 
+      [disabled]="renewForm.controls.SeasonParkingID.value == null || renewForm.controls.PeriodTo.value == null">
+      Renew
+    </ion-button>
+  </form>
+  <ion-button class="buttonBottom" *ngIf="successMessage" expand="block" fill="solid" color="success">
+    {{successMessage}}
+  </ion-button>
+  <ion-button class="buttonBottom"  *ngIf="errorMessage" expand="block" fill="solid" color="danger">
+    {{errorMessage}}
+  </ion-button>
+</ion-content>
+
+<ion-content *ngIf="title=='Terminate Season'" padding>
+  <ion-card *ngIf="seasons && seasons.length == 0">
+    <ion-card-title color="tertiary">No season parking</ion-card-title>
+    <ion-button expand="full" margin-top color="tertiary" (click)="addSeason()">Purchase Season</ion-button>
+  </ion-card>
+  <form *ngIf="seasons && seasons.length > 0" novalidate [formGroup]="terminateForm" (ngSubmit)="confirmTerminate()">
+    <div class="frame">
+      <ion-item>
+        <ion-label position="float" color="tertiary">Choose Season Parking</ion-label>
+        <ion-select *ngIf="seasons" interface="popover" formControlName="SeasonParkingID" required (ionChange)="onSelectSeasonTerminate()">
+          <ion-select-option 
+            *ngFor="let season of seasonActive" 
+            [value]="season.SeasonParkingID" 
+            [selected]="selectSeasonTerminate && season.SeasonParkingID == selectSeasonTerminate.SeasonParkingID">
+            {{season.SeasonParkingID}}/{{season.VehicleNum}}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item *ngIf="selectSeasonTerminate" lines="full">
+        <div slot="start">
+          <ion-label position="stacked" color="tertiary">Start Date</ion-label>
+          <ion-datetime display-format="YYYY-MM-DD" picker-format="YYYY-MM-DD" value="{{selectSeasonTerminate.PeriodFrom}}" disabled="true"></ion-datetime>
+        </div>
+        <div slot="end">
+          <ion-label position="stacked" color="tertiary">End Date</ion-label>
+          <ion-datetime display-format="YYYY-MM-DD" picker-format="YYYY-MM-DD" value="{{selectSeasonTerminate.PeriodTo}}" disabled="true"></ion-datetime>
+        </div>
+      </ion-item>
+
+      <ion-item *ngIf="selectSeasonTerminate" lines="full">
+        <div slot="start">
+          <ion-label position="stacked" color="tertiary">Season Type</ion-label>
+          <ion-input value="{{selectSeasonTerminate.SeasonType}}" disabled="true"></ion-input>
+        </div>
+        <div slot="end">
+          <ion-label position="stacked" color="tertiary">Status</ion-label>
+          <ion-input value="{{selectSeasonTerminate.Status}}" disabled="true"></ion-input>
+        </div>
+      </ion-item>
+    </div>
+    
+    <ion-button type="submit" float-start margin-top fill="clear" color="tertiary" 
+      [disabled]="terminateForm.controls.SeasonParkingID.value == null">
+      Terminate
+    </ion-button>
+  </form>
+</ion-content>
+
+<ion-button class="buttonBottom" *ngIf="successMessage" expand="block" fill="solid" color="success">
+  {{successMessage}}
+</ion-button>
+<ion-button class="buttonBottom" *ngIf="errorMessage" expand="block" fill="solid" color="danger">
+  {{errorMessage}}
+</ion-button>

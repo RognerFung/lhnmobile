@@ -1,0 +1,41 @@
+<ion-list *ngIf="data=='menu'">
+  <ion-item (click)="close()" href="/dashboard">
+    <ion-label>Dashboard</ion-label>
+  </ion-item>
+  <ion-item (click)="close()" href="/vehicle">
+    <ion-label>Vehicle</ion-label>
+  </ion-item>
+  <ion-item (click)="close()" href="/invoice">
+    <ion-label>Invoice</ion-label>
+  </ion-item>
+  <ion-item (click)="close()" href="/season">
+    <ion-label>Season Parking</ion-label>
+  </ion-item>
+  <ion-item (click)="close()" href="/request">
+    <ion-label>Request</ion-label>
+  </ion-item>
+  <ion-item (click)="close()" href="/tenant">
+    <ion-label>Tenant</ion-label>
+  </ion-item>
+  <ion-item (click)="close()" href="/profile">
+    <ion-label>Profile</ion-label>
+  </ion-item>
+  <ion-item (click)="logout()">
+    <ion-label>Log Out</ion-label>
+  </ion-item>
+</ion-list>
+
+<ion-list *ngIf="data=='dropdown'">
+  <ion-item (click)="close()" href="/vehicle?title=Change Vehicle">
+    <ion-label>Change Vehicle</ion-label>
+  </ion-item>
+  <ion-item (click)="close()" href="/vehicle?title=Revert Vehicle">
+    <ion-label>Revert Vehicle</ion-label>
+  </ion-item>
+  <ion-item (click)="close()" href="/vehicle?title=Change IU">
+    <ion-label>Change IU</ion-label>
+  </ion-item>
+  <ion-item (click)="close()" href="/vehicle?title=Change Cash Card">
+    <ion-label>Change Cash Card</ion-label>
+  </ion-item>
+</ion-list>

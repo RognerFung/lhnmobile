@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button float-end margin-top fill="clear" (click)="close('fail')">
+          Cancel
+        </ion-button>
+      </ion-buttons>
+      <ion-title>QR Code</ion-title>
+      <ion-buttons slot="primary">
+        <ion-button (click)="presentPopover($event)">
+          <ion-icon slot="icon-only" name="menu"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Pay SGD ${{amount}}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item justify-content-center (click)="close('success')">
+        <img id="imgPayMode" src="../../assets/NETSQPAY.png">
+      </ion-item>
+      <ion-item justify-content-center (click)="close('success')">
+        <ion-button class="buttonBottom" expand="full" margin-top color="tertiary">Scan to Pay</ion-button>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

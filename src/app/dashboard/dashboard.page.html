@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Dashboard</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="presentPopover($event)">
+        <ion-icon slot="icon-only" name="menu"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-item class="card-title" href="/vehicle">Vehicles</ion-item>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      Vehicles: {{(vehicles | async)?.length}}
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-item class="card-title" href="/invoice">Invoices</ion-item>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      Paid: {{(invoicesPaid | async)?.length}}
+      Outstanding: {{(invoicesOutstanding | async)?.length}}
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-item class="card-title" href="/season">Season Parkings</ion-item>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      Active: {{(seasonsActive | async)?.length}}
+      Pending: {{(seasonsPending | async)?.length}}
+      Terminated: {{(seasonsTerminated | async)?.length}}
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-item class="card-title" href="/request">Requests</ion-item>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      Approved: {{(requestsApproved | async)?.length}}
+      Pending: {{(requestsPending | async)?.length}}
+      Rejected: {{(requestsRejected | async)?.length}}
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-item class="card-title" href="/tenant">Tenant Status</ion-item>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      Parking lot: {{(tenants | async)?.length}}
+      <ion-item *ngFor="let tenant of tenants | async">
+        {{tenant.Address}}
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

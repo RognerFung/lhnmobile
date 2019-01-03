@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button float-end margin-top fill="clear" (click)="close('fail')">
+        Cancel
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Credit Card</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="presentPopover($event)">
+        <ion-icon slot="icon-only" name="menu"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Pay SGD ${{amount}}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item justify-content-center>
+        <img id="imgPayMode" src="../../assets/VISA_icon.gif">
+        <img id="imgPayModeMaster" src="../../assets/MasterCard_icon.gif" style="padding-left: 20px; padding-right: 20px;">
+      </ion-item>
+      <form>
+        <ion-item>
+          <ion-label position="stacked" color="tertiary">Name on Card</ion-label>
+          <ion-input placeholder="Name on Card"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked" color="tertiary">Card Number</ion-label>
+          <ion-input placeholder="Card Number"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked" color="tertiary">CVV/CVV2</ion-label>
+          <ion-input placeholder="CVV/CVV2"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked" color="tertiary">Expire Date</ion-label>
+          <ion-datetime display-format="MM/YYYY" picker-format="MMMM YYYY" placeholder="Select Expire Date"></ion-datetime>
+        </ion-item>
+        <ion-item>
+          <ion-button class="buttonBottom" expand="full" margin-top color="tertiary" (click)="close('success')">Pay</ion-button>
+        </ion-item>
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -1,0 +1,140 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>My Profile</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="presentPopover($event)">
+        <ion-icon slot="icon-only" name="menu"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <form *ngIf="profile" novalidate [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label position="stacked" color="tertiary">NRIC</ion-label>
+            <ion-input type="text" formControlName="NRIC" required></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label position="stacked" color="tertiary">Salutation</ion-label>
+            <ion-select interface="popover" formControlName="Salutation" placeholder="Select" cancelText="Cancel" required>
+              <ion-select-option>Select</ion-select-option>
+              <ion-select-option value="Mr">Mr</ion-select-option>
+              <ion-select-option value="Mrs">Mrs</ion-select-option>
+              <ion-select-option value="Ms">Ms</ion-select-option>
+              <ion-select-option value="Mdm">Mdm</ion-select-option>
+              <ion-select-option value="Dr">Dr</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label position="stacked" color="tertiary">FirstName</ion-label>
+            <ion-input type="text" formControlName="FirstName" required></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label position="stacked" color="tertiary">LastName</ion-label>
+            <ion-input type="text" formControlName="LastName" required></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="stacked" color="tertiary">Email</ion-label>
+            <ion-input type="email" formControlName="Email" required readonly></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label position="stacked" color="tertiary">ContactNo</ion-label>
+            <ion-input type="text" formControlName="ContactNo" required></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label position="stacked" color="tertiary">Fax</ion-label>
+            <ion-input type="text" formControlName="Fax" required></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="stacked" color="tertiary">CompanyName</ion-label>
+            <ion-input type="text" formControlName="CompanyName" required></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label position="stacked" color="tertiary">Country</ion-label>
+            <ion-input type="text" formControlName="Country" required></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label position="stacked" color="tertiary">PostalCode</ion-label>
+            <ion-input type="text" formControlName="PostalCode" required></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="stacked" color="tertiary">StreetName</ion-label>
+            <ion-input type="text" formControlName="StreetName" required></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label position="stacked" color="tertiary">Block</ion-label>
+            <ion-input type="text" formControlName="Block" required></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label position="stacked" color="tertiary">UnitNo</ion-label>
+            <ion-input type="text" formControlName="UnitNo" required></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="stacked" color="tertiary">Website</ion-label>
+            <ion-input type="text" formControlName="Website" required></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6">
+          <ion-button
+            type="submit" float-start margin-top fill="clear" color="tertiary">
+            Update
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+  <ion-button expand="full" margin-top color="tertiary" href="/password">
+    Change Password
+  </ion-button>
+</ion-content>

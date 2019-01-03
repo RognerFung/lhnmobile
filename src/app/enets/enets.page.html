@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button float-end margin-top fill="clear" (click)="close('fail')">
+          Cancel
+        </ion-button>
+      </ion-buttons>
+      <ion-title>Select Bank</ion-title>
+      <ion-buttons slot="primary">
+        <ion-button (click)="presentPopover($event)">
+          <ion-icon slot="icon-only" name="menu"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Pay SGD ${{amount}}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item justify-content-center (click)="close('success')">
+        <img src="../../assets/ocbc.gif" width="112px" height="50px" alt="OCBC">
+      </ion-item>
+        <ion-button class="buttonBottom" expand="full" margin-top color="tertiary" (click)="close('success')">Pay</ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

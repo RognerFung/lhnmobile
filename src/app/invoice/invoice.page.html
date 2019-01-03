@@ -1,0 +1,171 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start" *ngIf="!invoiceItems">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="start" *ngIf="invoiceItems">
+      <ion-button (click)="viewList()" fill="clear"><ion-icon name="arrow-back"></ion-icon>Back</ion-button>
+    </ion-buttons>
+    <ion-title>Invoice</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="presentPopover($event)">
+        <ion-icon slot="icon-only" name="menu"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="invoices && invoices.length == 0">
+  <ion-card>
+    <ion-card-title color="tertiary">No invoices</ion-card-title>
+    <ion-button expand="full" margin-top color="tertiary" href="/dashboard">Back to DashBoard</ion-button>
+  </ion-card>
+</ion-content>
+
+<ion-content *ngIf="invoices && invoices.length > 0 && !invoiceItems" padding>
+  <ion-card  *ngFor="let invoice of invoices">
+    <ion-card-header>
+      <ion-card-title>
+        {{invoice.InvoiceNumComp}}
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <ion-label position="stacked" color="tertiary">Date</ion-label>
+            <ion-input readonly value="{{invoice.PurchaseDate}}"></ion-input>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <ion-label position="stacked" color="tertiary">Amount (SGD)</ion-label>
+            <ion-input readonly value="${{invoice.Amount}}"></ion-input>
+          </ion-col>
+          <ion-col size="6">
+            <ion-label position="stacked" color="tertiary">Status</ion-label>
+            <ion-input readonly value="{{invoice.Status}}"></ion-input>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <ion-button (click)="viewDetail(invoice.InvoiceID)" margin-top fill="clear" color="tertiary">
+              View Detail
+            </ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12">
+            
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+<ion-content *ngIf="invoiceItems">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        TAX INVOICE {{selectInvoice.InvoiceNumComp}}
+      </ion-card-title>
+      <ion-card-subtitle margin-top>
+        LHN Parking Pte Ltd
+      </ion-card-subtitle>
+      <ion-card-subtitle>
+        10 Raeburn Park #02-18 088702
+      </ion-card-subtitle>
+      <ion-card-subtitle>
+        Tel: (65) 6631 0078 Fax: (65) 6367 2163
+      </ion-card-subtitle>
+      <ion-card-subtitle>
+        Email: enquiries@lhnparking.com.sg
+      </ion-card-subtitle>
+      <ion-card-subtitle>
+        GST Reg. No. : 200716389D
+      </ion-card-subtitle>
+      <ion-card-subtitle>
+        RCB No. 200716389D
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <ion-label position="stacked" color="tertiary">To</ion-label>
+            <ion-input readonly value="{{selectInvoice.CompanyName}}"></ion-input>
+          </ion-col>
+          <ion-col size="6">
+            <ion-label position="stacked" color="tertiary">Attn</ion-label>
+            <ion-input readonly value="{{selectInvoice.Attn}}"></ion-input>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="6">
+            <ion-label position="stacked" color="tertiary">Date</ion-label>
+            <ion-input readonly value="{{selectInvoice.PurchaseDate}}"></ion-input>
+          </ion-col>
+          <ion-col size="6">
+            <ion-label position="stacked" color="tertiary">Payment Terms</ion-label>
+            <ion-input readonly value="{{selectInvoice.PaymentTerm}}"></ion-input>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12">
+            <ion-label position="stacked" color="tertiary">Address</ion-label>
+            <ion-input readonly value="{{selectInvoice.Address}}"></ion-input>
+          </ion-col>
+        </ion-row>
+        <div class="frame">
+        <div *ngFor="let invoiceItem of invoiceItems">
+          <ion-row>
+            <ion-col size="12">
+              <ion-label position="stacked" color="tertiary">Description</ion-label>
+              <ion-textarea readonly rows="5" value="{{invoiceItem.Description}}"></ion-textarea>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="6">
+              <ion-label position="stacked" color="tertiary">Qty (Month)</ion-label>
+              <ion-input readonly value="{{invoiceItem.Qty}}"></ion-input>
+            </ion-col>
+            <ion-col size="6">
+              <ion-label position="stacked" color="tertiary">Unit Price (SGD)</ion-label>
+              <ion-input readonly value="${{invoiceItem.UnitPrice}}"></ion-input>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="6">
+              <ion-label position="stacked" color="tertiary">7% GST (SGD)</ion-label>
+              <ion-input readonly value="${{(invoiceItem.UnitPrice * invoiceItem.Qty * 0.07).toFixed(2)}}"></ion-input>
+            </ion-col>
+            <ion-col size="6">
+              <ion-label position="stacked" color="tertiary">Amount (SGD)</ion-label>
+              <ion-input readonly value="${{(invoiceItem.UnitPrice * invoiceItem.Qty).toFixed(2)}}"></ion-input>
+            </ion-col>
+          </ion-row>
+        </div>
+        </div>
+        <ion-row>
+          <ion-col size="6">
+            <ion-label position="stacked" color="tertiary">Status</ion-label>
+            <ion-input readonly value="{{selectInvoice.Status}}"></ion-input>
+          </ion-col>
+          <ion-col size="6">
+            <ion-label position="stacked" color="tertiary">Total Amount (SGD)</ion-label>
+            <ion-input readonly value="${{selectInvoice.Amount}}"></ion-input>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12">
+            <ion-textarea readonly rows="3" value="{{selectInvoice.AmountWord}}"></ion-textarea>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+    <ion-button (click)="viewList()" margin-top fill="clear" color="tertiary">
+      Back
+    </ion-button>
+  </ion-card>
+</ion-content>
